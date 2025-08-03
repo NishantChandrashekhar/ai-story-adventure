@@ -27,6 +27,35 @@ class OpenAIService {
     this.baseURL = 'https://api.openai.com/v1/chat/completions';
   }
 
+  async generateDefaultAdventure(): Promise<string> {
+    const prompt = this.buildIntroPrompt('medieval');
+    const response = await fetch(this.baseURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`
+      },
+      body: JSON.stringify({
+        model: config.OPENAI_MODEL,
+        messages: [
+          {
+            role: 'system',
+            content: prompt
+          }
+        ],
+        max_tokens: config.MAX_TOKENS,
+        temperature: config.TEMPERATURE
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.status}`);
+    }
+
+    const data: OpenAIResponse = await response.json();
+    return data.choices[0]?.message.content || '';
+  }
+
   async generateStoryIntro(theme: string): Promise<StoryResponse> {
     try {
       const prompt = this.buildIntroPrompt(theme);

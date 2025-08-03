@@ -35,7 +35,13 @@
     <main class="main-content">
       <!-- Chat Header -->
       <header class="chat-header">
-        <h1>AI Story Adventure</h1>
+        <div class="header-left">
+          <h1>AI Story Adventure</h1>
+          <div class="theme-indicator" id="themeIndicator" style="display: none;">
+            <span class="theme-icon">🎭</span>
+            <span class="theme-text" id="themeText">Theme</span>
+          </div>
+        </div>
         <div class="header-actions">
           <button class="clear-chat-btn">Clear Chat</button>
         </div>
@@ -78,6 +84,6 @@
     </div>
   </div>
 
-  <script type="module" src="script.ts"></script>
+  <script type="module" src="dist/script.js"></script>
 </body>
 </html>

@@ -11,6 +11,8 @@ const messages = document.getElementById('messages') as HTMLDivElement;
 const choicesContainer = document.getElementById('choices') as HTMLDivElement;
 const newStoryBtn = document.querySelector('.new-story-btn') as HTMLButtonElement;
 const clearChatBtn = document.querySelector('.clear-chat-btn') as HTMLButtonElement;
+const themeIndicator = document.getElementById('themeIndicator') as HTMLDivElement;
+const themeText = document.getElementById('themeText') as HTMLSpanElement;
 
 // Game State Instance
 let gameState: GameState = GameState.createNew();
@@ -52,29 +54,61 @@ function closeModal(): void {
   startModal.style.display = 'none';
 }
 
-function startAdventure(): void {
-  const adventureTheme = adventureThemeInput.value.trim();
+function showThemeIndicator(theme: string): void {
+  // Set the theme text
+  themeText.textContent = theme;
   
-  if (!adventureTheme) {
-    alert('Please describe your adventure theme to begin!');
-    return;
+  // Add tooltip for long themes
+  if (theme.length > 50) {
+    themeIndicator.title = theme;
   }
   
+  // Show the indicator with animation
+  themeIndicator.style.display = 'flex';
+  
+  // Update theme icon based on theme type
+  const themeIcon = themeIndicator.querySelector('.theme-icon') as HTMLSpanElement;
+  themeIcon.textContent = getThemeIcon(theme);
+}
+
+function getThemeIcon(theme: string): string {
+  const lowerTheme = theme.toLowerCase();
+  
+  if (lowerTheme.includes('medieval') || lowerTheme.includes('fantasy') || lowerTheme.includes('knight')) {
+    return '⚔️';
+  } else if (lowerTheme.includes('sci-fi') || lowerTheme.includes('space') || lowerTheme.includes('futuristic')) {
+    return '🚀';
+  } else if (lowerTheme.includes('detective') || lowerTheme.includes('mystery') || lowerTheme.includes('crime')) {
+    return '🔍';
+  } else if (lowerTheme.includes('horror') || lowerTheme.includes('scary') || lowerTheme.includes('thriller')) {
+    return '👻';
+  } else if (lowerTheme.includes('western') || lowerTheme.includes('cowboy') || lowerTheme.includes('wild west')) {
+    return '🤠';
+  } else {
+    return '🎭';
+  }
+}
+
+async function startAdventure(): Promise<void> {
+  let adventureTheme = adventureThemeInput.value.trim();
+  
+  if (!adventureTheme || adventureTheme === '') {
+    const defaultAdventure = await openAIService.generateDefaultAdventure();
+    adventureTheme = defaultAdventure;
+  }
+
   // Set adventure theme
   gameState.adventureTheme = adventureTheme;
   userName.textContent = 'Adventurer';
+  
+  // Show theme indicator
+  showThemeIndicator(adventureTheme);
   
   // Close modal
   closeModal();
   
   // Start the game
   gameState.isGameStarted = true;
-  
-  // Generate theme-based story
-  const storyIntro = generateStoryIntro(adventureTheme);
-  
-  // Display welcome message
-  displayMessage('assistant', storyIntro);
   
   // Show initial choices based on theme
   const initialChoices = generateInitialChoices(adventureTheme);
@@ -166,6 +200,9 @@ function startNewStory(): void {
   messages.innerHTML = '';
   choicesContainer.innerHTML = '';
   
+  // Hide theme indicator
+  themeIndicator.style.display = 'none';
+  
   // Create a new game state instance
   gameState = GameState.createNew();
   
@@ -192,27 +229,6 @@ function updateCharCount(): void {
     charCount.style.color = '#ffd93d';
   } else {
     charCount.style.color = '#8e8ea0';
-  }
-}
-
-// Theme-based Story Generation
-function generateStoryIntro(theme: string): string {
-  const lowerTheme = theme.toLowerCase();
-  
-  // Check for common themes and generate appropriate intros
-  if (lowerTheme.includes('medieval') || lowerTheme.includes('fantasy') || lowerTheme.includes('knight')) {
-    return `Welcome, brave adventurer! Your medieval fantasy adventure begins. You find yourself in a grand castle courtyard, banners fluttering in the wind. The kingdom faces a dark threat, and you've been chosen to embark on a quest. What path will you choose?`;
-  } else if (lowerTheme.includes('sci-fi') || lowerTheme.includes('space') || lowerTheme.includes('futuristic')) {
-    return `Welcome to the future, space explorer! Your sci-fi adventure begins aboard the starship "Nova Horizon." You're on a mission to explore uncharted sectors of the galaxy when an emergency alert sounds. What will you investigate first?`;
-  } else if (lowerTheme.includes('detective') || lowerTheme.includes('mystery') || lowerTheme.includes('crime')) {
-    return `Welcome, detective! Your mystery adventure begins in a foggy city street. A mysterious letter has arrived at your office, and a wealthy businessman has gone missing. The clues are scattered throughout the city. Where will you start your investigation?`;
-  } else if (lowerTheme.includes('horror') || lowerTheme.includes('scary') || lowerTheme.includes('thriller')) {
-    return `Welcome to your nightmare, brave soul! Your horror adventure begins in an abandoned mansion. Strange sounds echo through the halls, and you're not alone. Something lurks in the shadows, watching your every move. What will you do?`;
-  } else if (lowerTheme.includes('western') || lowerTheme.includes('cowboy') || lowerTheme.includes('wild west')) {
-    return `Howdy, partner! Your western adventure begins in the dusty town of Deadwood Gulch. A notorious outlaw has robbed the bank, and the sheriff needs your help. The trail leads into dangerous territory. Are you ready to ride?`;
-  } else {
-    // Generic adventure for other themes
-    return `Welcome to your adventure! Based on your theme: "${theme}", your journey begins in a world of endless possibilities. You find yourself at a crossroads, with multiple paths stretching before you. Each choice will shape your destiny. What will you do first?`;
   }
 }
 
