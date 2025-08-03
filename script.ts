@@ -1,4 +1,5 @@
 import openAIService from './openai-service.js';
+import { GameState } from './game-state.js';
 
 // DOM Elements
 const startModal = document.getElementById('startModal') as HTMLDivElement;
@@ -11,23 +12,8 @@ const choicesContainer = document.getElementById('choices') as HTMLDivElement;
 const newStoryBtn = document.querySelector('.new-story-btn') as HTMLButtonElement;
 const clearChatBtn = document.querySelector('.clear-chat-btn') as HTMLButtonElement;
 
-// Game State Interface
-interface GameState {
-  adventureTheme: string;
-  isGameStarted: boolean;
-  currentStory: string | null;
-  storyHistory: string[];
-  storyContext: string;
-}
-
-// Game State
-let gameState: GameState = {
-  adventureTheme: '',
-  isGameStarted: false,
-  currentStory: null,
-  storyHistory: [],
-  storyContext: ''
-};
+// Game State Instance
+let gameState: GameState = GameState.createNew();
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function(): void {
@@ -113,8 +99,6 @@ function displayMessage(sender: 'user' | 'assistant', content: string): void {
   scrollToBottom();
 }
 
-
-
 async function processUserChoice(choice: string): Promise<void> {
   try {
     // Get AI-generated response
@@ -125,7 +109,7 @@ async function processUserChoice(choice: string): Promise<void> {
     );
     
     // Update story context
-    gameState.storyContext += `\nPlayer chose: ${choice}\nAI Response: ${aiResponse.narrative}`;
+    gameState.appendToStoryContext(`\nPlayer chose: ${choice}\nAI Response: ${aiResponse.narrative}`);
     
     // Display AI response
     setTimeout(() => {
@@ -177,16 +161,13 @@ function scrollToBottom(): void {
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-
-
 function startNewStory(): void {
   // Clear current story
   messages.innerHTML = '';
   choicesContainer.innerHTML = '';
   
-  // Reset game state
-  gameState.isGameStarted = false;
-  gameState.currentStory = null;
+  // Create a new game state instance
+  gameState = GameState.createNew();
   
   // Show modal again
   showModal();

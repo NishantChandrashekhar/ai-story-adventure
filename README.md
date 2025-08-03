@@ -113,6 +113,7 @@ const config = {
 ├── index.html              # Main application
 ├── style.css               # Styling and layout
 ├── script.ts               # Main application logic (TypeScript)
+├── game-state.ts           # Game state management (TypeScript)
 ├── config.ts               # API configuration (add your key here)
 ├── openai-service.ts       # OpenAI API integration (TypeScript)
 ├── tsconfig.json           # TypeScript configuration
