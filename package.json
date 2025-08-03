@@ -1,0 +1,34 @@
+{
+  "name": "ai-story-adventure",
+  "version": "1.0.0",
+  "description": "An interactive story adventure game powered by OpenAI's GPT API",
+  "main": "dist/script.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "serve": "python -m http.server 8000",
+    "start": "npm run build && npm run serve"
+  },
+  "keywords": [
+    "typescript",
+    "openai",
+    "story",
+    "adventure",
+    "game",
+    "ai"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/ai-story-adventure.git"
+  },
+  "homepage": "https://YOUR_USERNAME.github.io/ai-story-adventure",
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/ai-story-adventure/issues"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {}
+} 

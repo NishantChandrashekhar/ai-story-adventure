@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Story Adventure</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Main Container -->
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Story Adventure</h2>
+        <button class="new-story-btn">+ New Story</button>
+      </div>
+      
+      <div class="sidebar-content">
+        <div class="story-history">
+          <!-- Story history items will be added here -->
+        </div>
+      </div>
+      
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <div class="user-avatar">👤</div>
+          <span class="user-name" id="userName">Guest</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="main-content">
+      <!-- Chat Header -->
+      <header class="chat-header">
+        <h1>AI Story Adventure</h1>
+        <div class="header-actions">
+          <button class="clear-chat-btn">Clear Chat</button>
+        </div>
+      </header>
+
+      <!-- Chat Messages Container -->
+      <div class="chat-container">
+        <div class="messages" id="messages">
+          <!-- Messages will be dynamically added here -->
+        </div>
+      </div>
+
+      <!-- Choice Buttons Container -->
+      <div class="choices-container" id="choices">
+        <!-- Choice buttons will be dynamically added here -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Start Story Modal -->
+  <div class="modal" id="startModal">
+    <div class="modal-content">
+      <h2>Start Your Adventure</h2>
+      <div class="input-group">
+        <label for="adventureTheme">Describe your theme for the adventure!</label>
+        <textarea 
+          id="adventureTheme" 
+          placeholder="Describe the type of adventure you want to experience... (e.g., medieval fantasy, sci-fi space exploration, detective mystery, etc.)"
+          rows="6"
+          maxlength="500"
+        ></textarea>
+        <div class="char-counter">
+          <span id="charCount">0</span>/500 characters
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="startBtn" class="primary-btn">Begin Adventure</button>
+        <button class="secondary-btn" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="script.ts"></script>
+</body>
+</html>
