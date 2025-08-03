@@ -27,8 +27,8 @@ class OpenAIService {
     this.baseURL = 'https://api.openai.com/v1/chat/completions';
   }
 
-  async generateDefaultAdventure(): Promise<string> {
-    const prompt = this.buildIntroPrompt('medieval');
+  async generateDefaultAdventureTheme(): Promise<string | null> {
+    const prompt = this.buildDefaultThemePrompt();
     const response = await fetch(this.baseURL, {
       method: 'POST',
       headers: {
@@ -56,7 +56,7 @@ class OpenAIService {
     return data.choices[0]?.message.content || '';
   }
 
-  async generateStoryIntro(theme: string): Promise<StoryResponse> {
+  async generateStoryIntro(theme: string): Promise<StoryResponse | null> {
     try {
       const prompt = this.buildIntroPrompt(theme);
       const response = await fetch(this.baseURL, {
@@ -86,10 +86,10 @@ class OpenAIService {
       return this.parseResponse(data);
     } catch (error) {
       console.error('OpenAI API Error:', error);
-      return this.getFallbackResponse(theme, '');
+      return null;
     }
   }
-  async generateStoryResponse(theme: string, userChoice: string, storyContext: string = ''): Promise<StoryResponse> {
+  async generateStoryResponse(theme: string, userChoice: string, storyContext: string = ''): Promise<StoryResponse | null> {
     try {
       const prompt = this.buildPrompt(theme, userChoice, storyContext);
       
@@ -125,10 +125,13 @@ class OpenAIService {
       
     } catch (error) {
       console.error('OpenAI API Error:', error);
-      return this.getFallbackResponse(theme, userChoice);
+      return null;
     }
   }
 
+  private buildDefaultThemePrompt(): string {
+    return `Select a theme for an adventure. The theme should be a single word or phrase that describes the setting or genre of the adventure.`;
+  }
   private buildIntroPrompt(theme: string): string {
     return `You are a creative storyteller creating interactive adventures. Generate engaging, immersive responses that continue the story based on the user's choices. Keep responses concise (2-3 sentences) and always provide 4 new choices for the player. The theme of the adventure is ${theme}.`
   }
@@ -182,44 +185,6 @@ CHOICES:
     }
     
     return { narrative, choices };
-  }
-
-  private getFallbackResponse(theme: string, userChoice: string): StoryResponse {
-    // Fallback responses when API fails
-    const fallbacks: Record<string, FallbackResponse> = {
-      'medieval': {
-        narrative: 'You continue your quest through the medieval realm, encountering new challenges and opportunities.',
-        choices: ['Seek the local blacksmith', 'Visit the castle library', 'Explore the nearby village', 'Follow the ancient map']
-      },
-      'sci-fi': {
-        narrative: 'The starship systems respond to your input, revealing new data and potential destinations.',
-        choices: ['Analyze the sensor data', 'Contact the engineering team', 'Plot a course to the anomaly', 'Review the mission logs']
-      },
-      'detective': {
-        narrative: 'Your investigation leads to new clues and potential witnesses in the case.',
-        choices: ['Interview the suspect', 'Examine the crime scene', 'Check the surveillance footage', 'Follow the money trail']
-      },
-      'horror': {
-        narrative: 'The shadows seem to move around you, and you hear distant sounds that make your skin crawl.',
-        choices: ['Investigate the noise', 'Search for a light source', 'Call out for help', 'Try to find an exit']
-      },
-      'western': {
-        narrative: 'The dusty trail leads you deeper into the wild west, where danger and opportunity await.',
-        choices: ['Ride to the next town', 'Check the local saloon', 'Visit the sheriff\'s office', 'Follow the outlaw\'s trail']
-      }
-    };
-
-    const lowerTheme = theme.toLowerCase();
-    for (const [key, response] of Object.entries(fallbacks)) {
-      if (lowerTheme.includes(key)) {
-        return response;
-      }
-    }
-    
-    return {
-      narrative: 'Your adventure continues with new possibilities unfolding before you.',
-      choices: ['Explore further', 'Seek assistance', 'Investigate clues', 'Take a different path']
-    };
   }
 }
 

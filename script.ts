@@ -90,19 +90,24 @@ function getThemeIcon(theme: string): string {
 }
 
 async function startAdventure(): Promise<void> {
-  let adventureTheme = adventureThemeInput.value.trim();
+  let adventureThemeByUser = adventureThemeInput.value.trim();
   
-  if (!adventureTheme || adventureTheme === '') {
-    const defaultAdventure = await openAIService.generateDefaultAdventure();
-    adventureTheme = defaultAdventure;
+  if (!adventureThemeByUser || adventureThemeByUser === '') {
+    const defaultAdventureTheme = await openAIService.generateDefaultAdventureTheme();
+    if (defaultAdventureTheme) {
+      adventureThemeByUser = defaultAdventureTheme;
+    }
   }
 
   // Set adventure theme
-  gameState.adventureTheme = adventureTheme;
+  const storyIntro = await openAIService.generateStoryIntro(adventureThemeByUser);
+  if (storyIntro) {
+    gameState.adventureTheme = storyIntro.narrative;
+  }
   userName.textContent = 'Adventurer';
   
   // Show theme indicator
-  showThemeIndicator(adventureTheme);
+  showThemeIndicator(gameState.adventureTheme);
   
   // Close modal
   closeModal();
@@ -111,8 +116,10 @@ async function startAdventure(): Promise<void> {
   gameState.isGameStarted = true;
   
   // Show initial choices based on theme
-  const initialChoices = generateInitialChoices(adventureTheme);
-  showChoices(initialChoices);
+  const gameResponse = await openAIService.generateStoryResponse(gameState.adventureTheme, 'Start the game', gameState.storyContext);
+  if (gameResponse) {
+    showChoices(gameResponse.choices);
+  }
   
   // Game is now ready for choices
 }
@@ -143,14 +150,18 @@ async function processUserChoice(choice: string): Promise<void> {
     );
     
     // Update story context
-    gameState.appendToStoryContext(`\nPlayer chose: ${choice}\nAI Response: ${aiResponse.narrative}`);
+    if (aiResponse) {
+      gameState.appendToStoryContext(`\nPlayer chose: ${choice}\nAI Response: ${aiResponse.narrative}`);
+    }
     
     // Display AI response
     setTimeout(() => {
-      displayMessage('assistant', aiResponse.narrative);
-      
-      // Show new choices from AI
-      showChoices(aiResponse.choices);
+      if (aiResponse) {
+        displayMessage('assistant', aiResponse.narrative);
+        
+        // Show new choices from AI
+        showChoices(aiResponse.choices);
+      }
     }, 1000);
     
   } catch (error) {
@@ -212,8 +223,7 @@ function startNewStory(): void {
 
 function clearChat(): void {
   if (confirm('Are you sure you want to clear the chat?')) {
-    messages.innerHTML = '';
-    choicesContainer.innerHTML = '';
+    startNewStory();
   }
 }
 
@@ -229,55 +239,6 @@ function updateCharCount(): void {
     charCount.style.color = '#ffd93d';
   } else {
     charCount.style.color = '#8e8ea0';
-  }
-}
-
-function generateInitialChoices(theme: string): string[] {
-  const lowerTheme = theme.toLowerCase();
-  
-  if (lowerTheme.includes('medieval') || lowerTheme.includes('fantasy') || lowerTheme.includes('knight')) {
-    return [
-      'Accept the quest from the king',
-      'Visit the local tavern for information',
-      'Check the castle armory for equipment',
-      'Speak with the court wizard'
-    ];
-  } else if (lowerTheme.includes('sci-fi') || lowerTheme.includes('space') || lowerTheme.includes('futuristic')) {
-    return [
-      'Check the ship\'s navigation systems',
-      'Investigate the emergency alert',
-      'Contact the bridge crew',
-      'Scan for nearby anomalies'
-    ];
-  } else if (lowerTheme.includes('detective') || lowerTheme.includes('mystery') || lowerTheme.includes('crime')) {
-    return [
-      'Visit the missing person\'s home',
-      'Check the local police station',
-      'Interview potential witnesses',
-      'Examine the mysterious letter'
-    ];
-  } else if (lowerTheme.includes('horror') || lowerTheme.includes('scary') || lowerTheme.includes('thriller')) {
-    return [
-      'Explore the mansion\'s main hall',
-      'Search for a way to turn on the lights',
-      'Call out to see if anyone responds',
-      'Try to find an exit'
-    ];
-  } else if (lowerTheme.includes('western') || lowerTheme.includes('cowboy') || lowerTheme.includes('wild west')) {
-    return [
-      'Join the posse to track the outlaw',
-      'Visit the saloon for information',
-      'Check the sheriff\'s office for clues',
-      'Ride to the next town for backup'
-    ];
-  } else {
-    // Generic choices for other themes
-    return [
-      'Explore the immediate surroundings',
-      'Seek out local inhabitants',
-      'Investigate any unusual signs',
-      'Follow your instincts'
-    ];
   }
 }
 

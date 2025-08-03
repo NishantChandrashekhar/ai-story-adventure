@@ -127,21 +127,27 @@ body {
   margin: 0;
 }
 
-/* Theme Indicator */
+/* Theme Indicator (full-width, wraps text, no clipping) */
 .theme-indicator {
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 20px 28px;
+  margin: 0 0 18px 0;
   background-color: #40414f;
   border: 2px solid #565869;
-  border-radius: 12px;
-  font-size: 16px;
+  border-radius: 14px;
+  font-size: 18px;
   color: #ececf1;
   transition: all 0.3s ease;
   animation: slideIn 0.5s ease-out;
   min-height: 60px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  word-break: break-word;
+  flex-wrap: wrap;
+  margin-top: 12px;
 }
 
 .theme-indicator:hover {
@@ -152,19 +158,19 @@ body {
 }
 
 .theme-icon {
-  font-size: 24px;
+  font-size: 32px;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .theme-text {
   font-weight: 600;
-  font-size: 16px;
-  line-height: 1.4;
-  max-width: 400px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  word-wrap: break-word;
+  font-size: 18px;
+  line-height: 1.5;
+  flex: 1 1 0;
+  word-break: break-word;
+  white-space: pre-line;
+  overflow-wrap: break-word;
 }
 
 @keyframes slideIn {
@@ -175,6 +181,52 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Ensure chat-header and theme-indicator are stacked, not overlapping */
+.chat-header {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 24px;
+  z-index: 1;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.header-actions {
+  flex-shrink: 0;
+  margin-left: 24px;
+}
+
+@media (max-width: 900px) {
+  .theme-indicator {
+    padding: 14px 10px;
+    font-size: 16px;
+    gap: 12px;
+  }
+  .theme-icon {
+    font-size: 24px;
+  }
+  .theme-text {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .theme-indicator {
+    padding: 10px 4vw;
+    font-size: 15px;
+    gap: 8px;
+    min-height: 40px;
+  }
+  .theme-icon {
+    font-size: 18px;
+  }
+  .theme-text {
+    font-size: 14px;
   }
 }
 
