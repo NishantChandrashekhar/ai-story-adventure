@@ -5,9 +5,9 @@
   "main": "dist/script.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch",
-    "serve": "python -m http.server 8000",
-    "start": "npm run build && npm run serve"
+    "watch": "tsc --watch",
+    "serve": "live-server --open=index.html",
+    "start": "concurrently \"npm run watch\" \"npm run serve\""
   },
   "keywords": [
     "typescript",
@@ -28,7 +28,9 @@
     "url": "https://github.com/YOUR_USERNAME/ai-story-adventure/issues"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "live-server": "^1.2.2",
+    "concurrently": "^8.2.0"
   },
   "dependencies": {}
 } 

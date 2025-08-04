@@ -28,7 +28,8 @@ class OpenAIService {
   }
 
   async generateDefaultAdventureTheme(): Promise<string | null> {
-    const prompt = this.buildDefaultThemePrompt();
+    console.log('Generating default adventure theme...');
+    const prompt = `Select a theme for an adventure. The theme should be a single word or phrase that describes the setting or genre of the adventure.`;
     const response = await fetch(this.baseURL, {
       method: 'POST',
       headers: {
@@ -133,7 +134,16 @@ class OpenAIService {
     return `Select a theme for an adventure. The theme should be a single word or phrase that describes the setting or genre of the adventure.`;
   }
   private buildIntroPrompt(theme: string): string {
-    return `You are a creative storyteller creating interactive adventures. Generate engaging, immersive responses that continue the story based on the user's choices. Keep responses concise (2-3 sentences) and always provide 4 new choices for the player. The theme of the adventure is ${theme}.`
+    return `You are a creative storyteller creating interactive adventures. Generate engaging, immersive responses that continue the story based on the user's choices. Keep responses concise (2-3 sentences) and always provide 4 new choices for the player. The theme of the adventure is ${theme}.
+    
+    Format your response exactly like this:
+    RESPONSE: [Your narrative here]
+    CHOICES:
+    1. [First choice]
+    2. [Second choice]
+    3. [Third choice]
+    4. [Fourth choice]
+    `
   }
 
   private buildPrompt(theme: string, userChoice: string, storyContext: string): string {
@@ -158,11 +168,11 @@ CHOICES:
 
   private parseResponse(data: OpenAIResponse): StoryResponse {
     const content = data?.choices[0]?.message.content;
-    
-    // Parse the response to extract narrative and choices
-    const responseMatch = content?.match(/RESPONSE:\s*(.*?)(?=\nCHOICES:|$)/s);
-    const choicesMatch = content?.match(/CHOICES:\s*\n((?:\d+\.\s*.*?\n?)+)/s);
-    
+
+    // More robust regexes
+    const responseMatch = content?.match(/RESPONSE:\s*([\s\S]*?)(?:\r?\n)+CHOICES:/i);
+    const choicesMatch = content?.match(/CHOICES:\s*(?:\r?\n)+([\s\S]*)/i);
+
     let narrative = 'The story continues with an unexpected twist...';
     let choices = [
       'Continue exploring',
@@ -170,20 +180,20 @@ CHOICES:
       'Take a different approach',
       'Follow your instincts'
     ];
-    
+
     if (responseMatch && responseMatch[1]) {
       narrative = responseMatch[1].trim();
     }
-    
+
     if (choicesMatch && choicesMatch[1]) {
-      const choicesText = choicesMatch[1];
-      choices = choicesText
-        .split('\n')
-        .filter(line => line.trim())
+      choices = choicesMatch[1]
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(line => /^\d+\.\s+/.test(line))
         .map(line => line.replace(/^\d+\.\s*/, '').trim())
         .filter(choice => choice.length > 0);
     }
-    
+
     return { narrative, choices };
   }
 }
