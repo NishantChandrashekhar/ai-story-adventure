@@ -58,7 +58,7 @@ body {
   padding: 10px 0;
   background: var(--md-btn-bg);
   border: 1.5px solid var(--md-primary);
-  border-radius: 6px;
+  border-radius: 18px;
   color: var(--md-primary);
   font-size: 14px;
   font-family: 'Roboto', serif;
@@ -163,7 +163,7 @@ body {
   margin: 0 0 14px 0;
   background: var(--md-surface);
   border-left: 3px solid var(--md-primary);
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 24px 24px 0;
   font-size: 16px;
   color: var(--md-secondary);
   font-family: 'Roboto', serif;
@@ -240,7 +240,7 @@ body {
   padding: 8px 18px;
   background: var(--md-btn-bg);
   border: 1px solid var(--md-primary);
-  border-radius: 6px;
+  border-radius: 18px;
   color: var(--md-primary);
   font-size: 14px;
   font-family: 'Roboto', serif;
@@ -297,7 +297,7 @@ body {
 .input-group textarea {
   background: var(--md-surface);
   border: 1px solid var(--md-border);
-  border-radius: 6px;
+  border-radius: 18px;
   color: var(--md-text);
   font-size: 15px;
   font-family: 'Roboto', serif;
@@ -321,7 +321,7 @@ body {
 .primary-btn {
   background: var(--md-btn-bg);
   border: 1px solid var(--md-primary);
-  border-radius: 6px;
+  border-radius: 12px;
   color: var(--md-primary);
   font-size: 14px;
   font-family: 'Roboto', serif;
@@ -340,7 +340,7 @@ body {
 .secondary-btn {
   background: var(--md-btn-bg);
   border: 1px solid var(--md-border);
-  border-radius: 6px;
+  border-radius: 12px;
   color: var(--md-text-secondary);
   font-size: 14px;
   font-family: 'Roboto', serif;
@@ -360,7 +360,7 @@ body {
   padding: 8px 18px;
   background: var(--md-btn-bg);
   border: 1px solid var(--md-primary);
-  border-radius: 6px;
+  border-radius: 18px;
   color: var(--md-primary);
   font-size: 14px;
   font-family: 'Roboto', serif;
@@ -410,3 +410,6 @@ body {
 }
 
 /* Responsive Design: keep as is, but use minimalist colors if needed */
+body, .sidebar-header h2, .main-content, .chat-header h1, .theme-indicator, .theme-text, .user-name, .new-story-btn, .choice-btn, .primary-btn, .secondary-btn, .clear-chat-btn, .input-group label, .input-group input, .input-group textarea, .char-counter, .messages, .message-content {
+  font-family: 'Roboto', 'Arial', sans-serif !important;
+}
