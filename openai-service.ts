@@ -28,8 +28,7 @@ class OpenAIService {
   }
 
   async generateDefaultAdventureTheme(): Promise<string | null> {
-    console.log('Generating default adventure theme...');
-    const prompt = `Select a theme for an adventure. The theme should be a single word or phrase that describes the setting or genre of the adventure.`;
+    const prompt = this.buildDefaultThemePrompt();
     const response = await fetch(this.baseURL, {
       method: 'POST',
       headers: {
@@ -134,7 +133,7 @@ class OpenAIService {
     return `Select a theme for an adventure. The theme should be a single word or phrase that describes the setting or genre of the adventure.`;
   }
   private buildIntroPrompt(theme: string): string {
-    return `You are a creative storyteller creating interactive adventures. Generate engaging, immersive responses that continue the story based on the user's choices. Keep responses concise (2-3 sentences) and always provide 4 new choices for the player. The theme of the adventure is ${theme}.
+    return `You are a creative storyteller creating interactive adventures. Generate engaging, immersive responses that continue the story based on the user's choices. Keep responses concise (2-3 sentences) and always provide 4 new choices for the player. There should be an element of foreshadowing in the story irrespective of the theme. Consider that the story should end after 4 choices made by the user. The theme of the adventure is ${theme}.
     
     Format your response exactly like this:
     RESPONSE: [Your narrative here]
