@@ -13,9 +13,12 @@ const newStoryBtn = document.querySelector('.new-story-btn') as HTMLButtonElemen
 const clearChatBtn = document.querySelector('.clear-chat-btn') as HTMLButtonElement;
 const themeIndicator = document.getElementById('themeIndicator') as HTMLDivElement;
 const themeText = document.getElementById('themeText') as HTMLSpanElement;
+const llmModelSelect = document.getElementById('llmModel') as HTMLSelectElement;
 
 // Game State Instance
 let gameState: GameState = GameState.createNew();
+// Store selected model (default to llama)
+let selectedModel: string = llmModelSelect ? llmModelSelect.value : 'llama';
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function(): void {
@@ -42,6 +45,13 @@ function setupEventListeners(): void {
   
   // Character counter for theme input
   adventureThemeInput.addEventListener('input', updateCharCount);
+
+  // Listen for model selection changes
+  if (llmModelSelect) {
+    llmModelSelect.addEventListener('change', (e) => {
+      selectedModel = llmModelSelect.value;
+    });
+  }
 }
 
 // Modal Functions

@@ -82,10 +82,6 @@ body {
   background: transparent;
 }
 
-.story-history {
-  /* Minimal, single line for each story */
-}
-
 .sidebar-footer {
   padding: 16px 12px;
   border-top: 1px solid var(--md-border);
@@ -309,6 +305,42 @@ body {
 .input-group input:focus,
 .input-group textarea:focus {
   border-color: var(--md-primary);
+}
+
+.input-group select.model-dropdown {
+  background: var(--md-surface);
+  border: 1px solid var(--md-border);
+  border-radius: 18px;
+  color: var(--md-text);
+  font-size: 15px;
+  font-family: 'Roboto', serif;
+  padding: 10px;
+  outline: none;
+  width: 100%;
+  margin-top: 6px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+
+.input-group select.model-dropdown:focus {
+  border-color: var(--md-primary);
+}
+
+.input-group label[for="llmModel"] {
+  margin-bottom: 12px;
+  margin-right: 12px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.input-group select.model-dropdown {
+  margin-bottom: 12px;
+  display: inline-block;
+  width: auto;
+  font-size: 14px;
+  min-width: 80px;
+  vertical-align: middle;
+  margin-top: 0;
 }
 
 .char-counter {
