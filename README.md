@@ -29,47 +29,26 @@ npm install
 
 ### 3. Configure Your API Key
 
-1. Open `config.ts` in your project
+1. Create your `.env` in your project
 2. Replace `'your_openai_api_key_here'` with your actual API key:
 
 ```typescript
-const config: Config = {
   OPENAI_API_KEY: 'sk-your-actual-api-key-here',
-  // ... other settings
-};
+  // ... other env vars
 ```
 
-### 4. Build and Run the Application
+### 4. Run the backend
 
 ```bash
-# Build TypeScript files
-npm run build
-
-# Start development server
-npm run serve
-
-# Or run both at once
-npm start
+nodemon app
 ```
 
-3. Navigate to `http://localhost:8000` in your browser
-
-### Alternative: Development Mode
-
-For development with auto-recompilation:
-
-```bash
-# Watch for TypeScript changes
-npm run dev
-
-# In another terminal, start the server
-python -m http.server 8000
-```
+3. Navigate to `http://localhost:3000` in your browser
 
 ## Security Notes
 
 - ⚠️ **Never commit your API key to version control**
-- ✅ The `config.js` file is already in `.gitignore`
+- ✅ The `.env` file is already in `.gitignore`
 - 🔒 For production, use environment variables instead of hardcoded keys
 
 ## How It Works
@@ -81,15 +60,13 @@ python -m http.server 8000
 
 ## API Configuration
 
-You can customize the OpenAI settings in `config.js`:
+You can customize the OpenAI settings in `.env`:
 
 ```javascript
-const config = {
-  OPENAI_API_KEY: 'your-key',
-  OPENAI_MODEL: 'gpt-3.5-turbo',  // or 'gpt-4' for better quality
-  MAX_TOKENS: 500,                 // Response length limit
+  OPENAI_API_KEY: 'your-key'
+  OPENAI_MODEL: 'gpt-3.5-turbo'  // or 'gpt-4' for better quality
+  MAX_TOKENS: 500                // Response length limit
   TEMPERATURE: 0.8                 // Creativity level (0-1)
-};
 ```
 
 ## Troubleshooting
