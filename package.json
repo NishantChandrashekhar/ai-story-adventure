@@ -2,12 +2,10 @@
   "name": "ai-story-adventure",
   "version": "1.0.0",
   "description": "An interactive story adventure game powered by OpenAI's GPT API",
-  "main": "dist/script.js",
+  "main": "app.ts",
   "scripts": {
     "build": "tsc",
-    "watch": "tsc --watch",
-    "serve": "live-server --open=index.html",
-    "start": "concurrently \"npm run watch\" \"npm run serve\""
+    "watch": "tsc --watch"
   },
   "keywords": [
     "typescript",
@@ -28,9 +26,14 @@
     "url": "https://github.com/YOUR_USERNAME/ai-story-adventure/issues"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "live-server": "^1.2.2",
-    "concurrently": "^8.2.0"
+    "@types/express": "^5.0.3",
+    "concurrently": "^8.2.0",
+    "live-server": "^1.2.2"
   },
-  "dependencies": {}
-} 
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10",
+    "openai": "^5.16.0"
+  }
+}
