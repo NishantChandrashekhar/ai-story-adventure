@@ -15,7 +15,6 @@ An interactive story adventure game powered by OpenAI's GPT API.
 ### 1. Install Dependencies
 
 ```bash
-# Install TypeScript and dependencies
 npm install
 ```
 
@@ -29,21 +28,23 @@ npm install
 
 ### 3. Configure Your API Key
 
-1. Create your `.env` in your project
-2. Replace `'your_openai_api_key_here'` with your actual API key:
+1. Create a `.env` file in your project root
+2. Add your OpenAI API key and other settings:
 
-```typescript
-  OPENAI_API_KEY: 'sk-your-actual-api-key-here',
-  // ... other env vars
+```env
+OPENAI_API_KEY=sk-your-actual-api-key-here
+OPENAI_MODEL=gpt-3.5-turbo   # or 'gpt-4' for better quality
+MAX_TOKENS=500               # Response length limit
+TEMPERATURE=0.8              # Creativity level (0-1)
 ```
 
 ### 4. Run the backend
 
 ```bash
-nodemon app
+node app.js
 ```
 
-3. Navigate to `http://localhost:3000` in your browser
+5. Navigate to `http://localhost:3000` in your browser
 
 ## Security Notes
 
@@ -58,42 +59,16 @@ nodemon app
 3. **Interactive Choices**: AI creates dynamic responses based on user choices
 4. **Context Awareness**: The AI remembers the story context for continuity
 
-## API Configuration
-
-You can customize the OpenAI settings in `.env`:
-
-```javascript
-  OPENAI_API_KEY: 'your-key'
-  OPENAI_MODEL: 'gpt-3.5-turbo'  // or 'gpt-4' for better quality
-  MAX_TOKENS: 500                // Response length limit
-  TEMPERATURE: 0.8                 // Creativity level (0-1)
-```
-
-## Troubleshooting
-
-### API Key Issues
-- Make sure your API key is correct and active
-- Check your OpenAI account has sufficient credits
-- Verify the key format starts with `sk-`
-
-### CORS Issues
-- Use a local server instead of opening the HTML file directly
-- The OpenAI API requires proper HTTP requests
-
-### Fallback Mode
-- If the API fails, the app uses pre-written fallback responses
-- Check the browser console for error messages
-
 ## File Structure
 
 ```
-├── index.html              # Main application
-├── style.css               # Styling and layout
-├── script.ts               # Main application logic (TypeScript)
-├── game-state.ts           # Game state management (TypeScript)
-├── config.ts               # API configuration (add your key here)
-├── openai-service.ts       # OpenAI API integration (TypeScript)
-├── tsconfig.json           # TypeScript configuration
+├── app.js                  # Express backend server
+├── openai-service.js       # OpenAI API integration
+├── public/
+│   ├── index.html          # Main application HTML
+│   ├── main.js             # Main application logic (JavaScript)
+│   └── style.css           # Styling and layout
+├── dist/                   # Compiled/transpiled files (if any)
 ├── package.json            # Project dependencies and scripts
 ├── .gitignore              # Protects sensitive files
 └── README.md               # This file
@@ -102,13 +77,13 @@ You can customize the OpenAI settings in `.env`:
 ## Customization
 
 ### Adding New Themes
-Edit the `generateStoryIntro()` and `generateInitialChoices()` functions in `script.ts` to add new theme support.
+Edit the story prompt logic in `openai-service.js` or adjust the frontend in `public/main.js` to support new theme options.
 
 ### Modifying AI Prompts
-Update the `buildPrompt()` method in `openai-service.ts` to change how the AI generates responses.
+Update the `buildPrompt()` method in `openai-service.js` to change how the AI generates responses.
 
 ### Styling Changes
-Modify `style.css` to customize the appearance and layout.
+Modify `public/style.css` to customize the appearance and layout.
 
 ## License
 
