@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  function updateStory(data){
+  function updateChoices(data){
     // Show choices
     if (data.choices && Array.isArray(data.choices)) {
       // Clear previous choices
@@ -13,9 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   
       choicesContainer.style.display = 'flex';
-    }
-    if(data.narrative){
-      addAssistantMessage(data.narrative)
     }
   }
   function addAssistantMessage(message){
@@ -33,9 +30,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
+  function addUserMessage(choice){
+    const userDiv = document.createElement('div');
+    userDiv.className = 'message user';
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message-content';
+    userDiv.appendChild(messageDiv);
+
+    const p = document.createElement("p");
+    p.textContent = choice;
+    messageDiv.appendChild(p);
+
+    document.getElementById('messages').appendChild(userDiv);
+  }
+
     const startModal = document.getElementById("startModal");
     const choicesContainer = document.getElementById("choices");
-    const messagesContainer = document.getElementById("messages");
 
     choicesContainer.style.display = 'none';
     const buttons = choicesContainer.getElementsByClassName('choice-btn');
@@ -45,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
       buttons[i].style.display = 'none';
       buttons[i].addEventListener('click', async () => {
         const choice = buttons[i].textContent;
+        addUserMessage(choice);
         // Call backend
         const response = await fetch("/api/story/choice", {
           method: "POST",
@@ -54,7 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
           })
         });
         const data = await response.json();
-        updateStory(data);
+        updateChoices(data);
+        if(data.narrative) addAssistantMessage(data.narrative);
       });
     }
   
@@ -78,6 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await response.json();
-      updateStory(data);
+      updateChoices(data);
+      if(data.narrative) addAssistantMessage(data.narrative);
     });
   });
