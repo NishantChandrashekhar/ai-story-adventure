@@ -8,6 +8,11 @@ class OpenAIService {
     this.storyTellerRole = `You are a creative storyteller creating interactive adventures. Generate engaging, immersive responses that continue the story based on the user's choices. Keep responses concise (2-3 sentences) and always provide 4 new choices for the player.`;
   }
 
+  reset(){
+    this.theme = "";
+    this.storyContext = "";
+  }
+
   setTheme(theme){
     this.theme = theme;
   }

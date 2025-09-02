@@ -15,6 +15,7 @@ class EventHandler {
     this.setupChoiceButtons();
     this.setupFormSubmission();
     this.setupStateSubscription();
+    this.setUpNewStoryButton();
     
     this.isInitialized = true;
   }
@@ -47,6 +48,12 @@ class EventHandler {
       } else {
         ui.hideLoading();
       }
+    });
+  }
+
+  setUpNewStoryButton(){
+    ui.elements.newStoryButton.addEventListener('click', async (e)=>{
+      this.handleNewStoryButton();
     });
   }
 
@@ -117,6 +124,10 @@ class EventHandler {
     }
   }
 
+  handleNewStoryButton(){
+    this.reset();
+  }
+
   // Reset the application state
   reset() {
     appState.setState({
@@ -127,9 +138,9 @@ class EventHandler {
       messages: []
     });
     
-    ui.clearMessages();
     ui.hideChoices();
     ui.showModal();
+    ui.clearMessages();
     ui.resetForm();
   }
 }

@@ -3,6 +3,7 @@ function createStoryController(openai_service) {
       async getStoryIntro(req, res) {
         const { theme } = req.body;
         try {
+          openai_service.reset();
           openai_service.setTheme(theme);
           const intro = await openai_service.getAIResponse();
           res.json(intro);

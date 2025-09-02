@@ -2,12 +2,13 @@
 class UI {
   constructor() {
     this.elements = {
-      startModal: document.getElementById("startModal"),
+      startModal: document.getElementsByClassName("modal")[0],
       choicesContainer: document.getElementById("choices"),
       messagesContainer: document.getElementById("messages"),
       choiceButtons: document.querySelectorAll('.choice-btn'),
       form: document.querySelector('#startModal form'),
-      themeInput: document.getElementById("adventureTheme")
+      themeInput: document.getElementById("adventureTheme"),
+      newStoryButton: document.getElementsByClassName("new-story-btn")[0]
     };
   }
 
@@ -81,7 +82,7 @@ class UI {
 
   // Show modal
   showModal() {
-    this.elements.startModal.style.display = 'block';
+    this.elements.startModal.style.display = 'flex';
   }
 
   // Hide modal
