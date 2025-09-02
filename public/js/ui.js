@@ -8,7 +8,8 @@ class UI {
       choiceButtons: document.querySelectorAll('.choice-btn'),
       form: document.querySelector('#startModal form'),
       themeInput: document.getElementById("adventureTheme"),
-      newStoryButton: document.getElementsByClassName("new-story-btn")[0]
+      newStoryButton: document.getElementsByClassName("new-story-btn")[0],
+      clearChatButton: document.getElementsByClassName("clear-chat-btn")[0]
     };
   }
 

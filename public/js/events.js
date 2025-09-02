@@ -14,8 +14,10 @@ class EventHandler {
     
     this.setupChoiceButtons();
     this.setupFormSubmission();
+    this.setupCancelButton();
     this.setupStateSubscription();
     this.setUpNewStoryButton();
+    this.setUpClearChatButton();
     
     this.isInitialized = true;
   }
@@ -37,6 +39,16 @@ class EventHandler {
     });
   }
 
+  // Setup cancel button
+  setupCancelButton() {
+    const cancelBtn = document.getElementById('cancelBtn');
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        ui.hideModal();
+      });
+    }
+  }
+
   // Setup state subscription for reactive UI updates
   setupStateSubscription() {
     appState.subscribe((state) => {
@@ -55,6 +67,12 @@ class EventHandler {
     ui.elements.newStoryButton.addEventListener('click', async (e)=>{
       this.handleNewStoryButton();
     });
+  }
+
+  setUpClearChatButton(){
+    ui.elements.clearChatButton.addEventListener('click', async () =>{
+      this.handleClearChat();
+    })
   }
 
   // Handle choice button click
@@ -128,8 +146,12 @@ class EventHandler {
     this.reset();
   }
 
+  handleClearChat(){
+    this.reset(false);
+  }
+
   // Reset the application state
-  reset() {
+  reset(showStartModal = true) {
     appState.setState({
       choices: [],
       narrative: "",
@@ -139,7 +161,7 @@ class EventHandler {
     });
     
     ui.hideChoices();
-    ui.showModal();
+    if(showStartModal) ui.showModal();
     ui.clearMessages();
     ui.resetForm();
   }
