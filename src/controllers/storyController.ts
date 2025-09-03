@@ -1,6 +1,9 @@
-function createStoryController(openai_service) {
+import { OpenAIService } from "../openai-service";
+import { Request, Response } from "express";
+
+function createStoryController(openai_service: OpenAIService) {
     return {
-      async getStoryIntro(req, res) {
+      async getStoryIntro(req: Request, res: Response) {
         const { theme } = req.body;
         try {
           openai_service.reset();
@@ -12,7 +15,7 @@ function createStoryController(openai_service) {
         }
       },
   
-      async getStoryChoice(req, res) {
+      async getStoryChoice(req: Request, res: Response) {
         const { choice } = req.body;
         try {
           const answer = await openai_service.getAIResponse(choice);
@@ -24,4 +27,4 @@ function createStoryController(openai_service) {
     };
   }
   
-  module.exports = createStoryController;
+  export default createStoryController;

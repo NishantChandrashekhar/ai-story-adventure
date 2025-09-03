@@ -1,5 +1,5 @@
-const express = require('express');
-const storyRoutes = require('./routes/story');
+import express from 'express'
+import storyRoutes from './routes/story'
 
 const app = express();
 const port = process.env.PORT || 3000;

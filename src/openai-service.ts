@@ -1,5 +1,14 @@
-class OpenAIService {
-  constructor(client, model = 'gpt-3.5-turbo') {
+import { OpenAI } from 'openai';
+
+export class OpenAIService {
+  apiKey: string | undefined;
+  model: string;
+  client: OpenAI;
+  theme: string;
+  storyContext: string;
+  storyTellerRole: string;
+
+  constructor(client: OpenAI, model = 'gpt-3.5-turbo') {
     this.apiKey = process.env.OPENAI_API_KEY;
     this.model = model;
     this.client = client;
@@ -13,40 +22,37 @@ class OpenAIService {
     this.storyContext = "";
   }
 
-  setTheme(theme){
+  setTheme(theme: string){
     this.theme = theme;
   }
 
-  async getResponse(userPrompt, systemRole= 'You are an helpful story assistant'){
-    console.log(`Max tokens: ${parseInt(process.env.MAX_TOKENS)} and temperature is: ${parseFloat(process.env.TEMPERATURE)}`)
+  async getResponse(userPrompt: string, systemRole= 'You are an helpful story assistant'){
     const response = await this.client.chat.completions.create({
       model: this.model,
       messages:[
         { role: 'system', content: systemRole},
         { role: 'user', content: userPrompt }
       ],
-      max_tokens: parseInt(process.env.MAX_TOKENS),
-      temperature: parseFloat(process.env.TEMPERATURE)
+      max_tokens: parseInt(process.env.MAX_TOKENS || '500'),
+      temperature: parseFloat(process.env.TEMPERATURE || '0.8')
     });
     return response;
   }
 
-  async getAIResponse(userChoice) {
+  async getAIResponse(userChoice: string | null = null) {
     try {
       const prompt = this.buildPrompt(userChoice);
       const response = await this.getResponse(prompt, this.storyTellerRole);
 
       const data = response.choices[0].message.content;
-      return this.parseResponse(data);
+      return this.parseResponse(data || '');
     } catch (error) {
       console.error('OpenAI API Error:', error);
       return null;
     }
   }
 
-  buildPrompt(userChoice) {
-    console.log(this.theme);
-    console.log(this.storyContext);
+  buildPrompt(userChoice: string | null = null) {
     return `Theme: ${this.theme}
     
 Current Story Context: ${this.storyContext || 'Beginning of adventure'}
@@ -67,7 +73,7 @@ CHOICES:
 STORYCONTEXT: [The story context up till now including the latest choice]`;
   }
 
-  parseResponse(content) {
+  parseResponse(content: string) {
     console.log(content);
     // More robust regexes
     const responseMatch = content?.match(/RESPONSE:\s*([\s\S]*?)(?:\r?\n)+CHOICES:/i);
@@ -103,6 +109,6 @@ STORYCONTEXT: [The story context up till now including the latest choice]`;
   }
 }
 
-module.exports = {
+export default {
   OpenAIService
 }
