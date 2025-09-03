@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "module": "ESNext",
+        "lib": ["DOM", "ES2021"],
+        "outDir": "public/js",
+        "rootDir": "src/client",
+        "noEmit": false,
+        "target": "ES2021"
+    },
+    "include": ["src/client/**/*.ts"],
+    "exclude": ["dist/**/*", "node_modules/**/*"]
+  }
+  

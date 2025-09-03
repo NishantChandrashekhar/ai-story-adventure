@@ -1,4 +1,5 @@
 import express from 'express'
+import path from 'path'
 import storyRoutes from './routes/story'
 
 const app = express();
@@ -9,7 +10,7 @@ app.use(express.json());
 app.use('/api/story', storyRoutes);
 
 app.get('/', (req, res) => {
-  res.render('index');
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 })
 
 app.listen(port, () => {
