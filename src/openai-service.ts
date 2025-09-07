@@ -1,38 +1,74 @@
 import { OpenAI } from 'openai';
+import { ChatCompletionMessageParam } from 'openai/resources/index';
 
 export class OpenAIService {
   apiKey: string | undefined;
   model: string;
   client: OpenAI;
-  theme: string;
-  storyContext: string;
   storyTellerRole: string;
+  history: string[][];
+  introMessage: string;
+  static ITERATIONS: number = 10;
 
   constructor(client: OpenAI, model = 'gpt-3.5-turbo') {
     this.apiKey = process.env.OPENAI_API_KEY;
     this.model = model;
     this.client = client;
-    this.theme = "";
-    this.storyContext = "";
-    this.storyTellerRole = `You are a creative storyteller creating interactive adventures. Generate engaging, immersive responses that continue the story based on the user's choices. Keep responses concise (2-3 sentences) and always provide 4 new choices for the player.`;
+    this.storyTellerRole = "";
+    this.history = [];
+    this.introMessage = "Please start the adventure!"
   }
 
   reset(){
-    this.theme = "";
-    this.storyContext = "";
+    this.storyTellerRole = "";
   }
 
   setTheme(theme: string){
-    this.theme = theme;
+    this.storyTellerRole = `
+    You are a creative storyteller creating interactive adventures. Generate engaging, immersive responses that continue the story based on the user's choices. Keep responses concise (2-3 sentences) and always provide 4 new choices for the player.Note that the story should end as soon as I have reached ${OpenAIService.ITERATIONS} number of choices.
+
+    The theme of the story is as follows: \n
+    ${theme} \n
+
+    Format your response exactly like this:
+    RESPONSE: [Your narrative here]
+    CHOICES:
+    1. [First choice]
+    2. [Second choice]
+    3. [Third choice]
+    4. [Fourth choice]`
   }
 
-  async getResponse(userPrompt: string, systemRole= 'You are an helpful story assistant'){
+  private generateMessagesObjectForLLM(userChoice: string): ChatCompletionMessageParam[]{
+    const messages: ChatCompletionMessageParam[] = [
+      { role: 'system', content: this.storyTellerRole }
+    ];
+    this.history.forEach((item) => {
+      messages.push({ role: 'user', content: item[0] });
+      messages.push({ role: 'assistant', content: item[1] });
+    });
+    messages.push( {role: 'user', content: userChoice} );
+    return messages;
+  }
+
+  private getInitialMessageObject(): ChatCompletionMessageParam[]{
+    const messages: ChatCompletionMessageParam[] = [
+      { role: 'system', content: this.storyTellerRole },
+      { role: 'user', content: this.introMessage }
+    ];
+    return messages
+  }
+
+  private async getResponse(userPrompt: string | null){
+    let messages: ChatCompletionMessageParam[];
+    if(userPrompt){
+      messages = this.generateMessagesObjectForLLM(userPrompt);
+    }else{
+      messages = this.getInitialMessageObject();
+    }
     const response = await this.client.chat.completions.create({
       model: this.model,
-      messages:[
-        { role: 'system', content: systemRole},
-        { role: 'user', content: userPrompt }
-      ],
+      messages: messages,
       max_tokens: parseInt(process.env.MAX_TOKENS || '500'),
       temperature: parseFloat(process.env.TEMPERATURE || '0.8')
     });
@@ -41,44 +77,26 @@ export class OpenAIService {
 
   async getAIResponse(userChoice: string | null = null) {
     try {
-      const prompt = this.buildPrompt(userChoice);
-      const response = await this.getResponse(prompt, this.storyTellerRole);
+      console.log(userChoice);
+      const response = await this.getResponse(userChoice);
 
       const data = response.choices[0].message.content;
-      return this.parseResponse(data || '');
+      const parsedResponse = this.parseResponse(data || '');
+      if(!data){
+        throw new Error("Something went wrong, got empty response from AI model");
+      }
+      this.history.push([userChoice || this.introMessage, data])
+      return parsedResponse
     } catch (error) {
       console.error('OpenAI API Error:', error);
       return null;
     }
   }
 
-  buildPrompt(userChoice: string | null = null) {
-    return `Theme: ${this.theme}
-    
-Current Story Context: ${this.storyContext || 'Beginning of adventure'}
-    
-Player's Choice: ${userChoice || 'No choice, the story is yet to begin'}
-    
-Please continue (or start) the story based on the player's choice. Provide:
-1. A narrative response (2-3 sentences)
-2. Four new choices for the player (numbered 1-4)
-
-Format your response exactly like this:
-RESPONSE: [Your narrative here]
-CHOICES:
-1. [First choice]
-2. [Second choice]
-3. [Third choice]
-4. [Fourth choice]
-STORYCONTEXT: [The story context up till now including the latest choice]`;
-  }
-
   parseResponse(content: string) {
-    console.log(content);
     // More robust regexes
     const responseMatch = content?.match(/RESPONSE:\s*([\s\S]*?)(?:\r?\n)+CHOICES:/i);
     const choicesMatch = content?.match(/CHOICES:\s*(?:\r?\n)+([\s\S]*)/i);
-    const storyContextMatch = content?.match(/STORYCONTEXT:\s*([\s\S]*)/i);
 
     let narrative = 'The story continues with an unexpected twist...';
     let choices = [
@@ -99,10 +117,6 @@ STORYCONTEXT: [The story context up till now including the latest choice]`;
         .filter(line => /^\d+\.\s+/.test(line))
         .map(line => line.replace(/^\d+\.\s*/, '').trim())
         .filter(choice => choice.length > 0);
-    }
-
-    if (storyContextMatch && storyContextMatch[1]) {
-      this.storyContext = storyContextMatch[1].trim();
     }
 
     return { narrative, choices };

@@ -123,8 +123,10 @@ class UI {
 
   // Scroll messages to bottom
   scrollToBottom() {
-    if(!this.elements.messagesContainer) return;
-    this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
+    const chatContainer = document.querySelector('.chat-container') as HTMLElement;
+    if(chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
   }
 
   // Clear messages
