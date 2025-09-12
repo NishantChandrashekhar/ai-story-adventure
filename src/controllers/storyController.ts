@@ -1,4 +1,4 @@
-import { OpenAIService } from "../openai-service";
+import { OpenAIService } from "../llm/openai-service";
 import { Request, Response } from "express";
 
 function createStoryController(openai_service: OpenAIService) {

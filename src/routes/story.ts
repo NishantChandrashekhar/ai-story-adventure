@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { OpenAI } from 'openai';
-import { OpenAIService } from '../openai-service';
+import { OpenAIService } from '../llm/openai-service';
 import { Router } from 'express';
 import createStoryController from '../controllers/storyController';
 
