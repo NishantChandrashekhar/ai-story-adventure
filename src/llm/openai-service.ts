@@ -74,6 +74,7 @@ export class OpenAIService {
       const response = await this.getResponse(userChoice);
 
       const data = response.choices[0].message.content;
+      console.log(data);
       const parsedResponse = this.parseResponse(data || '');
       if(!data){
         throw new Error("Something went wrong, got empty response from AI model");

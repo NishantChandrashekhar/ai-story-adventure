@@ -36,7 +36,7 @@ export class ShortStory extends StoryType{
                 `
                     MESSAGE NUMBER: ${this.numberOfChoicesSoFar.toString()}
                     THE CHOICE: ${userChoice}
-                    ACTION: Develop the characters that have been introduced in MESSAGE NUMBER 1.
+                    ACTION: Develop the characters that have been introduced in the response of MESSAGE NUMBER 1.
                 `
                 break;
             case 3:
@@ -44,7 +44,7 @@ export class ShortStory extends StoryType{
                 `
                     MESSAGE NUMBER: ${this.numberOfChoicesSoFar.toString()}
                     THE CHOICE: ${userChoice}
-                    ACTION: Introduce a subtle detail that will be used later on in the story as overshadowing.
+                    ACTION: Introduce a subtle detail that will be used later on in the story for foreshadowing. Note that you don't have to explicitly mention the foreshadow.
                 `
                 break;
             case 4:
@@ -52,7 +52,7 @@ export class ShortStory extends StoryType{
                 `
                     MESSAGE NUMBER: ${this.numberOfChoicesSoFar.toString()}
                     THE CHOICE: ${userChoice}
-                    ACTION: Set a premise for a climax that would be revealed later on in the story.
+                    ACTION: Set a premise for a climax that would be revealed later on in the story. Don't explicitly mention that it is a climax.
                 `
                 break;
             case 5:
@@ -68,7 +68,7 @@ export class ShortStory extends StoryType{
                 `
                     MESSAGE NUMBER: ${this.numberOfChoicesSoFar.toString()}
                     THE CHOICE: ${userChoice}
-                    ACTION: Direct the story to an actiona packed scene.
+                    ACTION: Direct the story to an action packed scene.
                 `
                 break;
             case 7:
@@ -76,7 +76,7 @@ export class ShortStory extends StoryType{
                 `
                     MESSAGE NUMBER: ${this.numberOfChoicesSoFar.toString()}
                     THE CHOICE: ${userChoice}
-                    ACTION: Conclude the action scene created in MESSAGE NUMBER 6 by reaching the climax that was set in MESSAGE NUMBER 5.
+                    ACTION: Conclude the action scene created in the response of MESSAGE NUMBER 6 by reaching the climax that was set in the response of MESSAGE NUMBER 5.
                 `
                 break;
             case 8:
