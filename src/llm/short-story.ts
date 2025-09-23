@@ -28,7 +28,7 @@ export class ShortStory extends StoryType{
                 `
                     MESSAGE NUMBER: ${this.numberOfChoicesSoFar.toString()}
                     THE CHOICE: ${userChoice}
-                    ACTION: Introduce atmost 3 characters by naming them and possibly explore the environment in which the theme is set.
+                    ACTION: Introduce atmost 3 characters by naming them and explore the environment in which the theme is set.
                 `
                 break;
             case 2:

@@ -1,90 +1,133 @@
 # AI Story Adventure
 
-An interactive story adventure game powered by OpenAI's GPT API.
+An interactive story adventure app powered by OpenAI. The backend is written in TypeScript (compiled to `dist/`), and the frontend is a modular vanilla JS app served from `public/`.
 
 ## Features
 
-- 🎮 **Interactive Storytelling**: Dynamic story generation based on user choices
-- 🎨 **Theme-Based Adventures**: Customize your adventure theme (medieval, sci-fi, detective, horror, western)
-- 💬 **ChatGPT-Style Interface**: Modern, responsive UI similar to ChatGPT
-- 🤖 **AI-Powered Responses**: Real-time story generation using OpenAI API
-- 📱 **Responsive Design**: Works on desktop and mobile devices
+- **Interactive storytelling**: Dynamic story generation based on user choices
+- **Theme-based adventures**: Provide any theme; the AI adapts
+- **Modern chat UI**: Chat-style interface with choices
+- **Context awareness**: Remembers previous choices to continue the narrative
 
-## Setup Instructions
+## Prerequisites
 
-### 1. Install Dependencies
+- Node.js 18+ recommended
+- An OpenAI API key with access to chat completion models
+
+## Setup
+
+1) Install dependencies
 
 ```bash
 npm install
 ```
 
-### 2. Get Your OpenAI API Key
+2) Environment variables
 
-1. Go to [OpenAI Platform](https://platform.openai.com/)
-2. Sign up or log in to your account
-3. Navigate to "API Keys" in your dashboard
-4. Create a new API key
-5. Copy the key (it starts with `sk-`)
-
-### 3. Configure Your API Key
-
-1. Create a `.env` file in your project root
-2. Add your OpenAI API key and other settings:
+Create a `.env` file in the project root:
 
 ```env
-OPENAI_API_KEY=sk-your-actual-api-key-here
-OPENAI_MODEL=gpt-3.5-turbo   # or 'gpt-4' for better quality
-MAX_TOKENS=500               # Response length limit
-TEMPERATURE=0.8              # Creativity level (0-1)
+OPENAI_API_KEY=sk-...          # required
+MAX_TOKENS=500                 # optional; default 500
+TEMPERATURE=0.8                # optional; default 0.8
+PORT=3000                      # optional; default 3000
 ```
 
-### 4. Run the backend
+Note: The model defaults to `gpt-3.5-turbo` in code. There is no `OPENAI_MODEL` variable currently read from the environment.
+
+## Build and Run
+
+The codebase is TypeScript-first. Build both server and client, then run the compiled server.
 
 ```bash
-node app.js
+# Clean previous builds and compile server (src → dist) and client (src/client → public/js)
+npm run build
+
+# Start the server from compiled output
+node dist/app.js
 ```
 
-5. Navigate to `http://localhost:3000` in your browser
+Then open `http://localhost:3000` in your browser.
 
-## Security Notes
+## Available Scripts
 
-- ⚠️ **Never commit your API key to version control**
-- ✅ The `.env` file is already in `.gitignore`
-- 🔒 For production, use environment variables instead of hardcoded keys
+- `npm run clean` – remove `dist/` and `public/js/`
+- `npm run build:server` – compile server TS per `tsconfig.json` → `dist/`
+- `npm run build:client` – compile client TS per `tsconfig.client.json` → `public/js/`
+- `npm run build` – clean, then build server and client
+
+Tip: A `dev` script exists but points to a non-existent entry; prefer the build/run flow above or add your own dev script using `nodemon` or `ts-node` if desired.
+
+## API
+
+Base URL: `/api`
+
+- POST `/api/story`
+  - Body: `{ "theme": string }`
+  - Response: `{ narrative: string, choices: string[] }`
+  - Behavior: Resets session context, sets story theme, returns the opening narrative and four choices.
+
+- POST `/api/story/choice`
+  - Body: `{ "choice": string }`
+  - Response: `{ narrative: string, choices: string[] }`
+  - Behavior: Continues the story based on the choice and returns the next narrative and choices.
+
+Errors are returned as `{ error: string }` with appropriate HTTP status codes.
+
+## Frontend
+
+The frontend is served from `public/` and uses compiled modules in `public/js/`:
+
+- `public/index.html` – main page
+- `public/js/main.js` – app bootstrap
+- `public/js/api.js` – API layer (base `/api`)
+- `public/js/state.js` – app state (choices, narrative, messages)
+- `public/js/ui.js` – DOM updates
+- `public/js/events.js` – event handlers
+
+Open `http://localhost:3000` and click “Begin Adventure” to start. The theme you enter initializes the story; subsequent button clicks send your choices to the backend.
 
 ## How It Works
 
-1. **Theme Input**: Users describe their desired adventure theme
-2. **Story Generation**: OpenAI API generates personalized story intros
-3. **Interactive Choices**: AI creates dynamic responses based on user choices
-4. **Context Awareness**: The AI remembers the story context for continuity
+- Server: `src/app.ts` mounts static `public/`, parses JSON, and registers `src/routes/story.ts` at `/api/story`.
+- LLM: `src/llm/openai-service.ts` orchestrates calls to OpenAI Chat Completions, tracks minimal history, and parses a strict output format into `{ narrative, choices }`.
+- Story type: `src/llm/short-story.ts` defines role instructions and staged prompts to guide story progression over multiple turns.
 
-## File Structure
+## Project Structure
 
 ```
-├── app.js                  # Express backend server
-├── openai-service.js       # OpenAI API integration
+├── src/
+│   ├── app.ts                      # Express server (TS)
+│   ├── routes/story.ts             # /api/story routes
+│   ├── controllers/storyController.ts
+│   └── llm/
+│       ├── openai-service.ts       # OpenAI client and parsing
+│       ├── short-story.ts          # Story prompt strategy
+│       └── story-type.ts           # Base class for story types
+│
 ├── public/
-│   ├── index.html          # Main application HTML
-│   ├── main.js             # Main application logic (JavaScript)
-│   └── style.css           # Styling and layout
-├── dist/                   # Compiled/transpiled files (if any)
-├── package.json            # Project dependencies and scripts
-├── .gitignore              # Protects sensitive files
-└── README.md               # This file
+│   ├── index.html
+│   ├── style.css
+│   └── js/                         # built client JS (from src/client)
+│
+├── dist/                           # built server JS (from src)
+├── tsconfig.json                   # server TS config
+├── tsconfig.client.json            # client TS config
+└── package.json
 ```
 
-## Customization
+## Security
 
-### Adding New Themes
-Edit the story prompt logic in `openai-service.js` or adjust the frontend in `public/main.js` to support new theme options.
+- Never commit `.env` or API keys
+- Limit `MAX_TOKENS` and set sensible `TEMPERATURE`
+- For production, set environment variables securely and run behind HTTPS
 
-### Modifying AI Prompts
-Update the `buildPrompt()` method in `openai-service.js` to change how the AI generates responses.
+## Troubleshooting
 
-### Styling Changes
-Modify `public/style.css` to customize the appearance and layout.
+- 401/403 from OpenAI: verify `OPENAI_API_KEY`
+- Empty story/choices: ensure the model is available to your key and that outbound network access is allowed
+- Frontend not updating: confirm client build exists in `public/js/` (rerun `npm run build`)
 
 ## License
 
-This project is for educational purposes. Please respect OpenAI's terms of service when using their API. 
+MIT. See `LICENSE`.
