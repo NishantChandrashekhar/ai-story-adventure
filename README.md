@@ -93,7 +93,7 @@ Open `http://localhost:3000` and click “Begin Adventure” to start. The theme
 - LLM: `src/llm/openai-service.ts` orchestrates calls to OpenAI Chat Completions, tracks minimal history, and parses a strict output format into `{ narrative, choices }`.
 - Story type: `src/llm/short-story.ts` defines role instructions and staged prompts to guide story progression over multiple turns.
 
-For a deeper dive, see `docs/LLM.md`.
+For a deeper dive, see [LLM Architecture](docs/LLM.md).
 
 ## Project Structure
 
