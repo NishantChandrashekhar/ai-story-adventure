@@ -78,11 +78,15 @@ classDiagram
     - storyType: StoryType
     + reset(): void
     + setTheme(theme: string): void
-    + getAIResponse(choice?: string): Promise<{ narrative, choices }>
+    + getAIResponse(choice?: string): Promise<ResponseData>
   }
 
   StoryType <|-- ShortStory
   OpenAIService o-- StoryType
+  class ResponseData {
+    + narrative: string
+    + choices: string[]
+  }
 ```
 
 ## Response Contract
