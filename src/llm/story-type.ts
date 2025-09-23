@@ -1,3 +1,15 @@
+/**
+ * Strategy base for shaping LLM prompts and turn-by-turn story guidance.
+ *
+ * Patterns:
+ * - Strategy: concrete types implement role and user prompt generation
+ * - Template Method: `themeIntro()` is a reusable prompt hook
+ *
+ * Extension points:
+ * - getLLMRole(theme): system role instructions, must enforce RESPONSE/CHOICES format
+ * - getUserPrompt(choice): staged turn instructions
+ * - reset(): clear any internal counters/state
+ */
 export abstract class StoryType{
     protected abstract numberOfChoicesSoFar: number;
     protected abstract numberOfSentencesPerResponse: number;

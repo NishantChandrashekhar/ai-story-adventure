@@ -1,4 +1,9 @@
 import { StoryType } from "./story-type";
+/**
+ * Concrete Strategy: guides a short interactive story through staged beats.
+ * Tracks turn count to vary `ACTION` instructions and maintains consistent
+ * RESPONSE/CHOICES formatting for the parser in OpenAIService.
+ */
 export class ShortStory extends StoryType{
     protected numberOfChoicesSoFar: number = 0;
     numberOfSentencesPerResponse: number = 7;

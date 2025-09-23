@@ -3,6 +3,15 @@ import { ChatCompletionMessageParam } from 'openai/resources/index';
 import { StoryType } from './story-type';
 import { ShortStory } from './short-story';
 
+/**
+ * Facade over the OpenAI client with minimal session history and
+ * Strategy-based prompt shaping via `StoryType`.
+ *
+ * Responsibilities:
+ * - Build chat messages (system + history + user)
+ * - Call chat.completions and parse strict RESPONSE/CHOICES output
+ * - Track brief history for continuity across turns
+ */
 export class OpenAIService {
   apiKey: string | undefined;
   model: string;
