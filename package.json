@@ -4,7 +4,7 @@
   "description": "An interactive story adventure game powered by OpenAI's GPT API",
   "main": "app.ts",
   "scripts": {
-    "clean": "powershell -Command \"if (Test-Path dist) { Remove-Item -Recurse -Force dist }; if (Test-Path 'public\\js') { Remove-Item -Recurse -Force 'public\\js' }\"",
+    "clean": "node -e \"const fs=require('fs');['dist','public/js'].forEach(p=>{try{fs.rmSync(p,{recursive:true,force:true});console.log('removed',p)}catch(e){}})\"",
     "watch": "tsc --watch",
     "build:client": "tsc -p tsconfig.client.json",
     "build:server": "tsc -p tsconfig.json",
@@ -32,7 +32,7 @@
   "devDependencies": {
     "@types/express": "^5.0.3",
     "concurrently": "^8.2.0",
-    "live-server": "^1.2.2",
+    "live-server": "^1.2.0",
     "ts-node": "^10.9.2"
   },
   "dependencies": {
